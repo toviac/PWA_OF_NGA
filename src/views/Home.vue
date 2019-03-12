@@ -1,18 +1,54 @@
+<!-- 外框 -->
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="out-frame">
+    <div class="frame-header">
+      <page-header></page-header>
+    </div>
+    <div class="frame-container">
+      <router-view></router-view>
+    </div>
+    <div class="frame-footer">
+      <page-footer></page-footer>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import PageHeader from '@/components/PageHeader.vue';
+import PageFooter from '@/components/PageFooter.vue';
 
 export default {
-  name: 'home',
-  components: {
-    HelloWorld,
+  data() {
+    return {
+    };
   },
+  components: {
+    PageHeader,
+    PageFooter,
+  },
+  watch: {},
+  computed: {},
+  created() {},
+  mounted() {},
+  methods: {},
 };
+
 </script>
+<style lang="scss">
+.out-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .frame-header {
+    flex-shrink: 0;
+    height: 50px;
+  }
+  .frame-container {
+    flex-grow: 1;
+  }
+  .frame-footer {
+    flex-shrink: 0;
+    height: 50px;
+  }
+}
+</style>
