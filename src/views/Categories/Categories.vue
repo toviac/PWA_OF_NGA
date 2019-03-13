@@ -26,6 +26,7 @@
               </cube-sticky-ele>
               <div class="tile-group">
                 <div class="tile" v-for="item in group.forums" :key="item.id" @click="handleTileClick(item.id)">
+                  <img class="tile-img" :src="`/img/icons/${item.id}.png`" @error="handleImgError">
                   <div>{{ item.name | length5 }}</div>
                 </div>
               </div>
@@ -42,7 +43,7 @@ export default {
   filters: {
     length5(val) {
       if (val.length > 5) {
-        return val.slice(0, 4) + '...';
+        return `${val.slice(0, 4)}...`;
       }
       return val;
     },
@@ -60,7 +61,8 @@ export default {
       },
       scrollOptions: {
         // 多层scroll嵌套时防止点击事件冒泡重复触发
-        stopPropagation: true,
+        // stopPropagation: true,
+        click: false,
       },
       stickyY: 0,
     };
@@ -77,11 +79,16 @@ export default {
   },
   mounted() {},
   methods: {
+    handleImgError(e) {
+      const el = e.srcElement;
+      el.src = '/img/icons/00.png';
+      el.onerror = null;
+    },
     handleTabChange(current) {
       this.currentTabName = current;
       this.initialIndex = this.labelList.findIndex(label => label === current);
     },
-    handleSlideChangePage (current) {
+    handleSlideChangePage(current) {
       this.currentTabName = this.labelList[current];
       console.log('change page: ', this.currentTabName);
     },
@@ -109,6 +116,7 @@ export default {
 </script>
 <style lang="scss">
 .category-list {
+  background-color: $color-primary;
   width: 100vw;
   height: 100%;
   display: flex;
@@ -127,9 +135,9 @@ export default {
       height: 100%;
       overflow-y: scroll;
       .title {
+        background-color: $color-primary;
         padding: 5px 10px;
         text-align: left;
-        background-color: #fff;
       }
       .tile-group {
         display: flex;
