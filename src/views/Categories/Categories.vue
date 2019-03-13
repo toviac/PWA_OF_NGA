@@ -1,14 +1,37 @@
 <!-- 版面列表 -->
 <template>
   <div class="category-list">
-    <cube-scroll direction="horizontal">
-      <cube-tab-bar v-model="currentTabName" show-slider>
-        <cube-tab v-for="(list, index) in categoryList" :key="index" :label="list.name"></cube-tab>
-      </cube-tab-bar>
-    </cube-scroll>
-    <cube-slide :initial-index="initialIndex" :auto-play="false" :show-dots="false">
-      <cube-slide-item>
-        fas;dlfkjasd
+    <cube-scroll-nav-bar
+      ref="scrollNav"
+      :current="currentTabName"
+      :labels="labelList"
+      :txts="labelList"
+      @change="handleTabChange"></cube-scroll-nav-bar>
+    <cube-slide
+      ref="slide"
+      :data="categoryList"
+      :initial-index="initialIndex"
+      :options="slideOptions"
+      :refreshResetCurrent="false"
+      :auto-play="false"
+      :show-dots="false"
+      :loop="false"
+      @change="handleSlideChangePage">
+      <cube-slide-item v-for="(list, index) in categoryList" :key="index">
+        <cube-sticky :pos="stickyY">
+          <cube-scroll :scroll-events="['scroll']" :options="scrollOptions" @scroll="handleScroll">
+            <div class="list-group" v-for="group in list.groups" :key="group.id">
+              <cube-sticky-ele :ele-key="group.name">
+                <div class="title">{{ group.name }}</div>
+              </cube-sticky-ele>
+              <div class="tile-group">
+                <div class="tile" v-for="item in group.forums" :key="item.id" @click="handleTileClick(item.id)">
+                  <div>{{ item.name | length5 }}</div>
+                </div>
+              </div>
+            </div>
+          </cube-scroll>
+        </cube-sticky>
       </cube-slide-item>
     </cube-slide>
   </div>
@@ -16,26 +39,58 @@
 
 <script>
 export default {
+  filters: {
+    length5(val) {
+      if (val.length > 5) {
+        return val.slice(0, 4) + '...';
+      }
+      return val;
+    },
+  },
   data() {
     return {
       currentTabName: '',
+      initialIndex: 0,
       categoryList: [],
+      slideOptions: {
+        listenScroll: true,
+        probeType: 3,
+        // 保留纵向滚动
+        eventPassthrough: 'vertical',
+      },
+      scrollOptions: {
+        // 多层scroll嵌套时防止点击事件冒泡重复触发
+        stopPropagation: true,
+      },
+      stickyY: 0,
     };
   },
   components: {},
   watch: {},
   computed: {
-    initialIndex () {
-      let index = 0;
-      index = this.categoryList.findIndex(list => list.name === this.currentTabName);
-      return index;
-    }
+    labelList() {
+      return this.categoryList.map(list => list.name);
+    },
   },
   created() {
     this.getCategories();
   },
   mounted() {},
   methods: {
+    handleTabChange(current) {
+      this.currentTabName = current;
+      this.initialIndex = this.labelList.findIndex(label => label === current);
+    },
+    handleSlideChangePage (current) {
+      this.currentTabName = this.labelList[current];
+      console.log('change page: ', this.currentTabName);
+    },
+    handleScroll({ y }) {
+      this.stickyY = -y;
+    },
+    handleTileClick(fid) {
+      console.log('tile-click: ', fid);
+    },
     getCategories() {
       const { $urls } = this;
       const params = {};
@@ -45,7 +100,7 @@ export default {
           this.currentTabName = data.result[0] && data.result[0].name;
         })
         .catch(err => {
-          console.log('err: ', err);
+          console.log('ERR_GET_CATEGORIES: ', err);
         });
     },
   },
@@ -55,5 +110,36 @@ export default {
 <style lang="scss">
 .category-list {
   width: 100vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .cube-scroll-nav-bar {
+    border-bottom: 1px solid #ccc;
+    .cube-scroll-nav-bar-item {
+      padding: 15px 15px;
+    }
+  }
+  .cube-slide {
+    width: 100vw;
+    height: calc(100% - 45px);
+    .cube-slide-item {
+      padding: 5px;
+      height: 100%;
+      overflow-y: scroll;
+      .title {
+        padding: 5px 10px;
+        text-align: left;
+        background-color: #fff;
+      }
+      .tile-group {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .tile {
+        width: calc((100vw - 10px) / 3);
+        height: calc((100vw - 10px) / 3);
+      }
+    }
+  }
 }
 </style>

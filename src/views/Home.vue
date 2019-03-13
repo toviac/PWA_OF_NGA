@@ -45,6 +45,7 @@ export default {
   }
   .frame-container {
     flex-grow: 1;
+    overflow: hidden;
   }
   .frame-footer {
     flex-shrink: 0;
