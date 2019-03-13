@@ -19,6 +19,7 @@ module.exports = {
       'as-needed',
     ],
     'max-len': ['warn', 200],
+    'linebreak-style': ["off", "windows"]
   },
   parserOptions: {
     parser: 'babel-eslint',
