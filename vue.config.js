@@ -42,6 +42,11 @@ module.exports = {
       stylus: {
         'resolve url': true,
         'import': []
+      },
+      sass: {
+        data: `
+          @import "@/style/ThemeLight.scss";
+        `,
       }
     },
     modules: false,
@@ -54,7 +59,15 @@ module.exports = {
   // dll: false,
   // PWA 插件相关配置
   // see https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa
-  pwa: {},
+  pwa: {
+    iconPaths: {
+      favicon32: 'img/favicon/favicon-32x32.png',
+      favicon16: 'img/favicon/favicon-16x16.png',
+      appleTouchIcon: 'img/favicon/apple-touch-icon-152x152.png',
+      maskIcon: 'img/favicon/safari-pinned-tab.svg',
+      msTileImage: 'img/favicon/msapplication-icon-144x144.png'
+    },
+  },
   // webpack-dev-server 相关配置
   devServer: {
     open: process.platform === 'darwin',
