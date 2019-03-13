@@ -6,11 +6,22 @@ const formatUrl = (arg) => {
   return `/api/${url.charAt(0) === '/' ? '' : url.charAt(0)}${url.substring(1)}`;
 };
 
+const responseHandle = function(response) {
+  return new Promise(function(resolve, reject) {
+    const { data } = response;
+    if (response.status === 200) {
+      resolve(data);
+    } else {
+      reject(data);
+    }
+  });
+};
+
 export default {
   async get(url, param) {
     try {
       const response = await axios.get(url, { params: param });
-      return response.data;
+      return responseHandle(response);
     } catch (e) {
       throw (new Error(e));
     }
@@ -18,7 +29,8 @@ export default {
   async post(url, param) {
     try {
       const response = await axios.post(url, param);
-      return response.data;
+      console.log('res: ', response);
+      return responseHandle(response);
     } catch (e) {
       throw (new Error(e));
     }
@@ -26,7 +38,7 @@ export default {
   async put(url, param) {
     try {
       const response = await axios.put(url, param);
-      return response.data;
+      return responseHandle(response);
     } catch (e) {
       throw (new Error(e));
     }
@@ -34,7 +46,7 @@ export default {
   async delete(url, param) {
     try {
       const response = await axios.delete(url, { data: param });
-      return response.data;
+      return responseHandle(response);
     } catch (e) {
       throw (new Error(e));
     }
