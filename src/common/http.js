@@ -1,21 +1,19 @@
 import axios from 'axios';
 
-const formatUrl = (arg) => {
-  const url = arg.toString();
-  if (/\/api\//.test(url.substring(0, 5))) return url;
-  return `/api/${url.charAt(0) === '/' ? '' : url.charAt(0)}${url.substring(1)}`;
-};
+// const formatUrl = (arg) => {
+//   const url = arg.toString();
+//   if (/\/api\//.test(url.substring(0, 5))) return url;
+//   return `/api/${url.charAt(0) === '/' ? '' : url.charAt(0)}${url.substring(1)}`;
+// };
 
-const responseHandle = function(response) {
-  return new Promise(function(resolve, reject) {
-    const { data } = response;
-    if (response.status === 200) {
-      resolve(data);
-    } else {
-      reject(data);
-    }
-  });
-};
+const responseHandle = response => new Promise((resolve, reject) => {
+  const { data } = response;
+  if (response.status === 200) {
+    resolve(data);
+  } else {
+    reject(data);
+  }
+});
 
 export default {
   async get(url, param) {
@@ -29,7 +27,6 @@ export default {
   async post(url, param) {
     try {
       const response = await axios.post(url, param);
-      console.log('res: ', response);
       return responseHandle(response);
     } catch (e) {
       throw (new Error(e));
