@@ -1,7 +1,7 @@
 <!-- page header -->
 <template>
   <div class="page-header">
-
+    <slot></slot>
   </div>
 </template>
 
