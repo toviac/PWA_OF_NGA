@@ -26,8 +26,8 @@
               </cube-sticky-ele>
               <div class="tile-group">
                 <div class="tile" v-for="item in group.forums" :key="item.id" @click="handleTileClick(item.id)">
-                  <img class="tile-img" :src="`/img/icons/${item.id}.png`" @error="handleImgError">
-                  <div>{{ item.name | length5 }}</div>
+                  <img class="tile-img" :src="formatImg(item.id)" @error="handleImgError">
+                  <div class="tile-name">{{ item.name }}</div>
                 </div>
               </div>
             </div>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   filters: {
     length5(val) {
@@ -70,6 +72,7 @@ export default {
   components: {},
   watch: {},
   computed: {
+    ...mapGetters(['icons']),
     labelList() {
       return this.categoryList.map(list => list.name);
     },
@@ -79,6 +82,13 @@ export default {
   },
   mounted() {},
   methods: {
+    formatImg(id) {
+      const { icons } = this;
+      if (icons.includes(`./${id}.png`)) {
+        return `/img/icons/${id}.png`;
+      }
+      return '/img/icons/00.png';
+    },
     handleImgError(e) {
       const el = e.srcElement;
       el.src = '/img/icons/00.png';
@@ -131,12 +141,13 @@ export default {
     width: 100vw;
     height: calc(100% - 45px);
     .cube-slide-item {
-      padding: 5px;
+      padding: 0 5px;
       height: 100%;
       overflow-y: scroll;
       .title {
         background-color: $color-primary;
         padding: 5px 10px;
+        font-size: 14px;
         text-align: left;
       }
       .tile-group {
@@ -146,6 +157,20 @@ export default {
       .tile {
         width: calc((100vw - 10px) / 3);
         height: calc((100vw - 10px) / 3);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        .tile-name {
+          margin-top: 10px;
+          padding: 0 10px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          // 解决nowrap时宽度大于父元素
+          width: calc(100% - 20px);
+        }
       }
     }
   }

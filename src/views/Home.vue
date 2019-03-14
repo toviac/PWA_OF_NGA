@@ -1,21 +1,14 @@
-<!-- 外框 -->
+<!-- 主页面 -->
 <template>
-  <div class="out-frame">
-    <div class="frame-header">
-      <page-header></page-header>
-    </div>
-    <div class="frame-container">
-      <router-view></router-view>
-    </div>
-    <div class="frame-footer">
-      <page-footer></page-footer>
-    </div>
-  </div>
+  <page-frame class="home-page">
+    <div slot="header"></div>
+    <categories></categories>
+  </page-frame>
 </template>
 
 <script>
-import PageHeader from '@/components/PageHeader.vue';
-import PageFooter from '@/components/PageFooter.vue';
+import PageFrame from '@/components/PageFrame.vue';
+import Categories from '@/views/categories/Categories.vue';
 
 export default {
   data() {
@@ -23,8 +16,8 @@ export default {
     };
   },
   components: {
-    PageHeader,
-    PageFooter,
+    PageFrame,
+    Categories,
   },
   watch: {},
   computed: {},
