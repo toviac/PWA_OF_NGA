@@ -9,6 +9,16 @@ export default new Router({
     {
       path: '/',
       component: Home,
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/categories/Categories.vue'),
+          meta: {
+            title: '论坛',
+            keepAlive: true,
+          },
+        },
+      ],
     },
   ],
 });
