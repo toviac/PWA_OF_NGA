@@ -1,7 +1,7 @@
 <!-- page header -->
 <template>
   <div class="page-header">
-    <slot></slot>
+    <div class="page-title">{{ $route.meta.title }}</div>
   </div>
 </template>
 
@@ -23,6 +23,5 @@ export default {
 <style lang="scss">
 .page-header {
   height: 50px;
-  background-color: #ccc;
 }
 </style>

@@ -1,14 +1,16 @@
 <!-- 主页面 -->
 <template>
   <page-frame class="home-page">
-    <div slot="header"></div>
-    <categories></categories>
+      <router-view></router-view>
+    <div class="home-footer" slot="footer">
+      <div class="footer-btn">论坛</div>
+      <div class="footer-btn">我</div>
+    </div>
   </page-frame>
 </template>
 
 <script>
 import PageFrame from '@/components/PageFrame.vue';
-import Categories from '@/views/categories/Categories.vue';
 
 export default {
   data() {
@@ -17,7 +19,6 @@ export default {
   },
   components: {
     PageFrame,
-    Categories,
   },
   watch: {},
   computed: {},
@@ -28,21 +29,11 @@ export default {
 
 </script>
 <style lang="scss">
-.out-frame {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  .frame-header {
-    flex-shrink: 0;
-    height: 50px;
-  }
-  .frame-container {
-    flex-grow: 1;
-    overflow: hidden;
-  }
-  .frame-footer {
-    flex-shrink: 0;
-    height: 50px;
+.home-page {
+  .home-footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
   }
 }
 </style>

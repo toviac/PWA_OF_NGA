@@ -1,26 +1,32 @@
 <!-- 页面框架 -->
 <template>
   <div class="page-frame">
-    <div class="page-header" v-if="$slots.header">
-      <slot name="header"></slot>
+    <div class="frame-header">
+      <slot name="header">
+        <page-header></page-header>
+      </slot>
     </div>
-    <div class="page-body">
+    <div class="frame-body">
       <div class="wrapper">
         <slot></slot>
       </div>
     </div>
-    <div class="page-footer" v-if="$slots.footer">
+    <div class="frame-footer" v-if="$slots.footer">
       <slot name="footer"></slot>
     </div>
   </div>
 </template>
 
 <script>
+import PageHeader from './PageHeader.vue';
+
 export default {
   data() {
     return {};
   },
-  components: {},
+  components: {
+    PageHeader,
+  },
   computed: {},
   watch: {},
   mounted() {},
@@ -36,12 +42,16 @@ export default {
   width: 100vw;
   background-color: #fff;
   overflow: hidden;
-  > .page-header,
-  > .page-footer {
+  > .frame-header,
+  > .frame-footer {
     flex-grow: 0;
     height: 50px;
+    display: flex;
+    > * {
+      flex-grow: 1;
+    }
   }
-  > .page-body {
+  > .frame-body {
     position: relative;
     flex-grow: 1;
     overflow: hidden;
