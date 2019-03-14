@@ -9,12 +9,6 @@ export default new Router({
     {
       path: '/',
       component: Home,
-      children: [
-        {
-          path: '',
-          component: () => import('@/views/Categories/Categories.vue'),
-        },
-      ],
     },
   ],
 });
