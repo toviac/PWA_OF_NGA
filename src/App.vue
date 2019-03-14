@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view/>
+    <transition name="page-move">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -12,15 +14,14 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+  .page-move-enter,
+  .page-move-leave-active {
+    transform: translate(100%, 0);
+  }
+
+  .page-move-enter-active,
+  .page-move-leave-active {
+    transition: transform 0.3s;
   }
 }
 </style>
