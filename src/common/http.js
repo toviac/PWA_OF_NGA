@@ -26,7 +26,11 @@ export default {
   },
   async post(url, param) {
     try {
-      const response = await axios.post(url, param);
+      const response = await axios.post(url, param, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+      });
       return responseHandle(response);
     } catch (e) {
       throw (new Error(e));
