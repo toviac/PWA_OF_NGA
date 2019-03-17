@@ -1,6 +1,10 @@
 <!-- 主页面 -->
 <template>
   <page-frame class="home-page">
+    <div class="home-header" slot="header">
+      <div class="home-title">论坛</div>
+      <div class="search">搜索</div>
+    </div>
       <router-view></router-view>
     <div class="home-footer" slot="footer">
       <div class="footer-btn">论坛</div>
@@ -30,6 +34,16 @@ export default {
 </script>
 <style lang="scss">
 .home-page {
+  .home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    .home-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
   .home-footer {
     display: flex;
     justify-content: space-around;

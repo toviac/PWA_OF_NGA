@@ -107,6 +107,9 @@ export default {
     },
     handleTileClick(fid) {
       console.log('tile-click: ', fid);
+      this.$router.push({
+        path: `/blocks/${fid}`,
+      });
     },
     getCategories() {
       const { $urls } = this;
