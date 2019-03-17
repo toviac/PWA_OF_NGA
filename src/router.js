@@ -20,5 +20,10 @@ export default new Router({
         },
       ],
     },
+    {
+      path: '/blocks/:id',
+      component: () => import('@/views/post-list/List.vue'),
+      meta: {},
+    },
   ],
 });
