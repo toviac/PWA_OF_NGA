@@ -2,7 +2,9 @@
 <template>
   <page-frame class="post-list">
     <page-header slot="header" :title="pageTitle"></page-header>
-    <list-item v-for="item in list" :key="item.tid" :item="item"></list-item>
+    <cube-scroll>
+      <list-item v-for="item in list" :key="item.tid" :item="item"></list-item>
+    </cube-scroll>
   </page-frame>
 </template>
 

@@ -4,8 +4,8 @@
     <div class="item-info">
       <div class="author">{{ item.author }}</div>
       <div class="reply-info">
-        <div class="last-reply-time">{{ formatTime(item.lastpost) }}</div>
-        <div class="reply-count"></div>
+        <div class="last-reply-time">{{ item.lastpost | formatDate }}</div>
+        <div class="reply-count">{{ item.replies }}</div>
       </div>
     </div>
   </div>
