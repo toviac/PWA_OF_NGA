@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 
 // const formatUrl = (arg) => {
 //   const url = arg.toString();
@@ -24,11 +25,14 @@ export default {
       throw (new Error(e));
     }
   },
+  // https://github.com/axios/axios#browser
+  // 如何提交表单
   async post(url, param) {
     try {
-      const response = await axios.post(url, param, {
+      const response = await axios.post(url, qs.stringify(param), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'X-USER-AGENT': 'Nga_Official/80012',
         },
       });
       return responseHandle(response);
