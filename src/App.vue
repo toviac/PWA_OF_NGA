@@ -29,5 +29,31 @@
   .page-move-leave-active {
     transition: transform 0.3s;
   }
+
+  // 各种颜色
+  .royalblue {
+    color: royalblue;
+  }
+  .darkblue {
+    color: darkblue;
+  }
+  .blue {
+    color: #0080ff;
+  }
+  .orange {
+    color: #a06700;
+  }
+  .red {
+    color: #da2c2c;
+  }
+  .green {
+    color: #3d9f0e;
+  }
+  .bold {
+    font-weight: bold;
+  }
+  .italic {
+    font-style: italic;
+  }
 }
 </style>
