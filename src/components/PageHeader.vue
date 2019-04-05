@@ -2,7 +2,9 @@
 <template>
   <div class="page-header">
     <div class="left">
-      <div class="back">返回</div>
+      <div class="back" @click="goBack">
+        <i class="iconfont nga-icon-back"></i>
+      </div>
       <div class="page-title">{{ title }}</div>
     </div>
   </div>
@@ -25,12 +27,17 @@ export default {
   computed: {},
   created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
+  },
 };
 
 </script>
 <style lang="scss">
 .page-header {
+  background-color: #31393c;
   height: 50px;
   display: flex;
   justify-content: space-between;
@@ -38,8 +45,12 @@ export default {
   padding: 0 20px;
   .left {
     display: flex;
-    .back {}
+    .back {
+      margin-right: 20px;
+      color: #fbf8eb;
+    }
     .page-title {
+      color: #d6d7d8;
       font-size: 18px;
     }
   }

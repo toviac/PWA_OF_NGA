@@ -2,7 +2,11 @@
 <template>
   <page-frame class="post-list">
     <page-header slot="header" :title="pageTitle"></page-header>
-    <cube-scroll>
+    <cube-scroll
+      :data="list"
+      :options="scrollOptions"
+      @pulling-down="pullDownHandler"
+      @pulling-up="pullUpHandler">
       <list-item v-for="item in list" :key="item.tid" :item="item"></list-item>
     </cube-scroll>
   </page-frame>
@@ -18,7 +22,7 @@ export default {
     return {
       list: [],
       pageTitle: '',
-      currentPage: '1',
+      currentPage: 1,
     };
   },
   components: {
@@ -27,6 +31,34 @@ export default {
     ListItem,
   },
   computed: {
+    scrollOptions() {
+      const { pullDownRefresh, pullUpLoad } = this;
+      return {
+        pullDownRefresh,
+        pullUpLoad,
+        scrollbar: {
+          fade: true,
+          interactive: false, // 1.8.0 新增
+        },
+      };
+    },
+    pullDownRefresh() {
+      return {
+        threshold: 50,
+        stop: 50,
+        stopTime: 500,
+        txt: '刷新成功',
+      };
+    },
+    pullUpLoad() {
+      return {
+        threshold: 0,
+        txt: {
+          more: '加载成功',
+          noMore: '已经到底啦',
+        },
+      };
+    },
   },
   watch: {
   },
@@ -52,15 +84,30 @@ export default {
       $http.post($urls.getList, params)
         .then(data => {
           this.pageTitle = data.forumname;
-          this.list = data.result.data;
+          if (currentPage === 1) {
+            this.list = data.result.data;
+          } else {
+            this.list = this.list.concat(data.result.data);
+          }
+          if (this.list.length) ++this.currentPage;
         })
         .catch(err => {
           console.log('err: ', err);
         });
+    },
+    pullDownHandler() {
+      this.currentPage = 1;
+      this.getList();
+    },
+    pullUpHandler() {
+      this.getList();
     },
   },
 };
 </script>
 
 <style lang="scss">
+.post-list {
+  background-color: $color-primary;
+}
 </style>
