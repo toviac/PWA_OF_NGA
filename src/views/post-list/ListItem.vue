@@ -45,7 +45,7 @@ export default {
       if (!titleFont) return [];
       return Object.keys(titleFont).map(key => {
         if (key === 'color' && titleFont[key] && !['red', 'blue', 'green', 'orange'].includes(titleFont[key])) console.log('UNSET_COLOR: ', this.item, titleFont[key]);
-        if (key === 'color' && titleFont[key]) return `color-${titleFont[key]}`;
+        if (key === 'color' && titleFont[key]) return titleFont[key];
         if (titleFont[key]) return key;
         return '';
       });
@@ -74,21 +74,6 @@ export default {
     .forum {
       color: #c0b8a8;
     }
-  }
-  .color-blue {
-    color: #0080ff;
-  }
-  .color-orange {
-    color: #a06700;
-  }
-  .color-red {
-    color: #da2c2c;
-  }
-  .color-green {
-    color: #3d9f0e;
-  }
-  .bold {
-    font-weight: bold;
   }
   .item-info {
     display: flex;

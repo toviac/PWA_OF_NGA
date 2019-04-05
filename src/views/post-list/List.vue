@@ -1,14 +1,11 @@
 <!-- 帖子列表 -->
 <template>
   <page-frame class="post-list">
-    <page-header slot="header" :title="pageTitle"></page-header>
-    <cube-scroll
-      :data="list"
-      :options="scrollOptions"
-      @pulling-down="pullDownHandler"
-      @pulling-up="pullUpHandler">
-      <list-item v-for="item in list" :key="item.tid" :item="item"></list-item>
-    </cube-scroll>
+    <page-header slot="header" :title="pageTitle" :menuList="menuList" @menuClick="menuClickHandler"></page-header>
+    <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore">
+      <list-item v-for="item in list" :key="item.tid" :item="item" @click.native="goPost(item.tid)"></list-item>
+    </mu-load-more>
+    <transition-router-view></transition-router-view>
   </page-frame>
 </template>
 
@@ -20,6 +17,15 @@ import ListItem from './ListItem.vue';
 export default {
   data() {
     return {
+      menuList: [
+        { name: '提醒' },
+        { name: '消息' },
+        { name: '历史浏览' },
+        { name: '搜索' },
+        { name: '字号' },
+      ],
+      refreshing: false,
+      loading: false,
       list: [],
       pageTitle: '',
       currentPage: 1,
@@ -30,40 +36,12 @@ export default {
     PageHeader,
     ListItem,
   },
-  computed: {
-    scrollOptions() {
-      const { pullDownRefresh, pullUpLoad } = this;
-      return {
-        pullDownRefresh,
-        pullUpLoad,
-        scrollbar: {
-          fade: true,
-          interactive: false, // 1.8.0 新增
-        },
-      };
-    },
-    pullDownRefresh() {
-      return {
-        threshold: 50,
-        stop: 50,
-        stopTime: 500,
-        txt: '刷新成功',
-      };
-    },
-    pullUpLoad() {
-      return {
-        threshold: 0,
-        txt: {
-          more: '加载成功',
-          noMore: '已经到底啦',
-        },
-      };
-    },
-  },
-  watch: {
+  computed: {},
+  watch: {},
+  created() {
+    this.getList();
   },
   mounted() {
-    this.getList();
   },
   methods: {
     getList() {
@@ -81,31 +59,47 @@ export default {
         page: currentPage,
         // stid: 0,
       };
-      $http.post($urls.getList, params)
-        .then(data => {
-          this.pageTitle = data.forumname;
-          if (currentPage === 1) {
-            this.list = data.result.data;
-          } else {
-            // 要进行帖子去重
-            const totalList = this.list.concat(data.result.data);
-            const tidArr = this.list.map(item => item.tid).concat(data.result.data.map(item => item.tid));
-            const tidSet = new Set(tidArr);
-            const filteredList = [...tidSet].map(tid => totalList.find(item => item.tid === tid));
-            this.list = filteredList;
-          }
-          if (data.result.data.length) ++this.currentPage;
-        })
-        .catch(err => {
-          console.log('err: ', err);
-        });
+      return new Promise((resolve, reject) => {
+        $http.post($urls.getList, params)
+          .then(data => {
+            this.pageTitle = data.forumname;
+            if (currentPage === 1) {
+              this.list = data.result.data;
+            } else {
+              // 要进行帖子去重
+              const totalList = this.list.concat(data.result.data);
+              const tidArr = this.list.map(item => item.tid).concat(data.result.data.map(item => item.tid));
+              const tidSet = new Set(tidArr);
+              const filteredList = [...tidSet].map(tid => totalList.find(item => item.tid === tid));
+              this.list = filteredList;
+            }
+            if (data.result.data.length) ++this.currentPage;
+            resolve();
+          })
+          .catch(err => {
+            console.log('err: ', err);
+            reject(err);
+          });
+      });
     },
-    pullDownHandler() {
+    async refresh() {
+      this.refreshing = true;
       this.currentPage = 1;
-      this.getList();
+      await this.getList();
+      this.refreshing = false;
     },
-    pullUpHandler() {
-      this.getList();
+    async loadMore() {
+      this.loading = true;
+      await this.getList();
+      this.loading = false;
+    },
+    goPost(tid) {
+      this.$router.push({
+        path: `/post/${tid}`,
+      });
+    },
+    menuClickHandler(menu) {
+      console.log('menuClick: ', menu);
     },
   },
 };
@@ -114,5 +108,11 @@ export default {
 <style lang="scss">
 .post-list {
   background-color: $color-primary;
+  .mu-refresh-control {
+    color: #EFB973;
+  }
+  .mu-circle-spinner {
+    border-color: #EFB973;
+  }
 }
 </style>
