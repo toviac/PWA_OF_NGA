@@ -67,6 +67,7 @@ export default {
       left: 0;
       width: 100vw;
       height: 100%; // 此处不能添加overflow
+      overflow: auto;
     }
   }
 }
