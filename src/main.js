@@ -7,6 +7,7 @@ import store from './store';
 import './registerServiceWorker';
 import http from './common/http';
 import urls from './common/urls';
+import TransitionRouterView from './components/TransitionRouterView.vue';
 
 
 moment.locale('zh-cn');
@@ -38,6 +39,9 @@ Vue.prototype.$http = http;
 
 // 全局注册url列表
 Vue.prototype.$urls = urls;
+
+// 全局注册动画router-view
+Vue.component('transition-router-view', TransitionRouterView);
 
 new Vue({
   router,

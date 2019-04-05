@@ -5,7 +5,7 @@
       <div class="home-title">论坛</div>
       <div class="search">搜索</div>
     </div>
-      <router-view></router-view>
+      <transition-router-view></transition-router-view>
     <div class="home-footer" slot="footer">
       <div class="footer-btn">论坛</div>
       <div class="footer-btn">我</div>

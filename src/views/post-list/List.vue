@@ -87,9 +87,14 @@ export default {
           if (currentPage === 1) {
             this.list = data.result.data;
           } else {
-            this.list = this.list.concat(data.result.data);
+            // 要进行帖子去重
+            const totalList = this.list.concat(data.result.data);
+            const tidArr = this.list.map(item => item.tid).concat(data.result.data.map(item => item.tid));
+            const tidSet = new Set(tidArr);
+            const filteredList = [...tidSet].map(tid => totalList.find(item => item.tid === tid));
+            this.list = filteredList;
           }
-          if (this.list.length) ++this.currentPage;
+          if (data.result.data.length) ++this.currentPage;
         })
         .catch(err => {
           console.log('err: ', err);

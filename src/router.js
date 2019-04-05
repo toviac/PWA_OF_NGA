@@ -9,6 +9,9 @@ export default new Router({
     {
       path: '/',
       component: Home,
+      meta: {
+        keepAlive: true,
+      },
       children: [
         {
           path: '',
@@ -17,13 +20,15 @@ export default new Router({
             title: '论坛',
             keepAlive: true,
           },
+          children: [
+            {
+              path: '/blocks/:id',
+              component: () => import('@/views/post-list/List.vue'),
+              meta: {},
+            },
+          ],
         },
       ],
-    },
-    {
-      path: '/blocks/:id',
-      component: () => import('@/views/post-list/List.vue'),
-      meta: {},
     },
   ],
 });

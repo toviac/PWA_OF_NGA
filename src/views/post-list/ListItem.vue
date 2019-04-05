@@ -1,6 +1,6 @@
 <template>
   <div class="list-item">
-    <div class="item-title" :style="titleStyle">
+    <div class="item-title" :class="titleClass">
       {{ item.subject }}
       <span class="forum" v-if="item.forumname">[{{ item.forumname }}]</span>
     </div>
@@ -40,47 +40,22 @@ export default {
   components: {
   },
   computed: {
-    titleStyle() {
-      if (!this.item.titlefont_api) return {};
-      const {
-        color: fontColor,
-        bold,
-        italic,
-        underline,
-      } = this.item.titlefont_api;
-      return {
-        fontWeight: bold ? 'bold' : 'normal',
-        color: fontColor,
-        fontStyle: italic ? 'italic' : 'normal',
-        textDecoration: underline ? 'underline' : 'none',
-      };
+    titleClass() {
+      const { titlefont_api: titleFont } = this.item;
+      if (!titleFont) return [];
+      return Object.keys(titleFont).map(key => {
+        if (key === 'color' && titleFont[key] && !['red', 'blue', 'green', 'orange'].includes(titleFont[key])) console.log('UNSET_COLOR: ', this.item, titleFont[key]);
+        if (key === 'color' && titleFont[key]) return `color-${titleFont[key]}`;
+        if (titleFont[key]) return key;
+        return '';
+      });
     },
   },
   watch: {
   },
   mounted() {
   },
-  methods: {
-    formatTime(time) {
-      const currentTime = new Date().getTime();
-      const fullDate = new Date(time * 1000);
-      const diff = currentTime - time * 1000;
-      // 一分钟内
-      if (diff < 60000) {
-        return '刚刚';
-      }
-      // 一小时内
-      if (diff < 360000) {
-        return `${(diff / 60000).toFixed(0)}分钟前`;
-      }
-      const hourMinute = `${String(fullDate.getHours()).padStart(2, '0')}:${String(fullDate.getMinutes()).padStart(2, '0')}`;
-      // 今天
-      if (currentTime.getDate() === new Date(time * 1000).getDate()) {
-        return hourMinute;
-      }
-      return `${fullDate.getMonth() + 1}-${fullDate.getDate()} ${hourMinute}`;
-    },
-  },
+  methods: {},
 };
 </script>
 
@@ -99,6 +74,21 @@ export default {
     .forum {
       color: #c0b8a8;
     }
+  }
+  .color-blue {
+    color: #0080ff;
+  }
+  .color-orange {
+    color: #a06700;
+  }
+  .color-red {
+    color: #da2c2c;
+  }
+  .color-green {
+    color: #3d9f0e;
+  }
+  .bold {
+    font-weight: bold;
   }
   .item-info {
     display: flex;

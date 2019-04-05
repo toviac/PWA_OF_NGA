@@ -35,6 +35,7 @@
         </cube-sticky>
       </cube-slide-item>
     </cube-slide>
+    <transition-router-view></transition-router-view>
   </div>
 </template>
 
