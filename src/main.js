@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import './cube-ui';
+import './muse-ui';
 import moment from 'moment';
 import App from './App.vue';
 import router from './router';
