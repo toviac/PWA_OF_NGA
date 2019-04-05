@@ -25,6 +25,13 @@ export default new Router({
               path: '/blocks/:id',
               component: () => import('@/views/post-list/List.vue'),
               meta: {},
+              children: [
+                {
+                  path: '/post/:id',
+                  component: () => import('@/views/post/Post.vue'),
+                  meta: {},
+                },
+              ],
             },
           ],
         },
