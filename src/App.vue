@@ -1,7 +1,12 @@
 <template>
   <div id="app">
+    <!-- <transition name="page-move"> -->
+      <keep-alive key="keep-alive">
+        <router-view v-if="$route.meta.keepAlive"/>
+      </keep-alive>
+    <!-- </transition> -->
     <transition name="page-move">
-      <router-view/>
+      <router-view key="router-view" v-if="!$route.meta.keepAlive"/>
     </transition>
   </div>
 </template>
