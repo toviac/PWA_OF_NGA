@@ -1,10 +1,11 @@
+/* eslint-disable no-param-reassign */
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -22,12 +23,12 @@ export default new Router({
           },
           children: [
             {
-              path: '/blocks/:id',
+              path: '/blocks/:fid',
               component: () => import('@/views/post-list/List.vue'),
               meta: {},
               children: [
                 {
-                  path: '/post/:id',
+                  path: '/post/:fid/:tid',
                   component: () => import('@/views/post/Post.vue'),
                   meta: {},
                 },
@@ -39,3 +40,19 @@ export default new Router({
     },
   ],
 });
+
+// 路由栈
+const routerStack = [];
+router.beforeEach((to, from, next) => {
+  if (routerStack.length && routerStack.findIndex(r => r.path === to.path)) {
+    // 后退
+    routerStack.length--;
+    from.meta.keepAlive = false;
+  } else {
+    // 前进
+    to.meta.keepAlive = true;
+  }
+  next();
+});
+
+export default router;
