@@ -39,6 +39,7 @@ export default {
   computed: {},
   watch: {},
   created() {
+    console.log('list created');
     this.getList();
   },
   mounted() {
@@ -54,7 +55,7 @@ export default {
       const params = {
         // sign: 'bd2f80c1cbbe85f7ba6f3beac0cbae13',
         // t: new Date().getTime(),
-        fid: $route.params.id,
+        fid: $route.params.fid,
         // app_id: 1010,
         page: currentPage,
         // stid: 0,
@@ -95,7 +96,7 @@ export default {
     },
     goPost(tid) {
       this.$router.push({
-        path: `/post/${tid}`,
+        path: `/post/${this.$route.params.fid}/${tid}`,
       });
     },
     menuClickHandler(menu) {
@@ -108,11 +109,5 @@ export default {
 <style lang="scss">
 .post-list {
   background-color: $color-primary;
-  .mu-refresh-control {
-    color: #EFB973;
-  }
-  .mu-circle-spinner {
-    border-color: #EFB973;
-  }
 }
 </style>

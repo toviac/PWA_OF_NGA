@@ -55,5 +55,13 @@
   .italic {
     font-style: italic;
   }
+
+  // 页面加载动画颜色
+  .mu-refresh-control {
+    color: #EFB973;
+  }
+  .mu-circle-spinner {
+    border-color: #EFB973;
+  }
 }
 </style>

@@ -81,7 +81,7 @@ export default {
     align-items: center;
     margin-top: 10px;
     * {
-      font-size: 14px;
+      font-size: 12px;
     }
     .author {
       .icon-author {

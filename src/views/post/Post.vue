@@ -2,8 +2,10 @@
 <template>
   <page-frame class="post-detail">
     <page-header slot="header" title="主题详情"></page-header>
-    <div class="post-title">{{ postTitle }}</div>
-    <reply-item v-for="(reply, index) in replyList" :key="reply.pid" :reply="reply" :floor="index"></reply-item>
+    <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore">
+      <div class="post-title">{{ postTitle }}</div>
+      <reply-item v-for="reply in replyList" :key="reply.pid" :reply="reply"></reply-item>
+    </mu-load-more>
   </page-frame>
 </template>
 
@@ -15,6 +17,8 @@ import ReplyItem from './ReplyItem.vue';
 export default {
   data() {
     return {
+      loading: false,
+      refreshing: false,
       postTitle: '',
       replyList: [],
       currentPage: 1,
@@ -28,7 +32,7 @@ export default {
   watch: {},
   computed: {},
   created() {
-    this.getPost();
+    this.refresh();
   },
   mounted() {},
   methods: {
@@ -44,16 +48,30 @@ export default {
         // sign: 'd98c17b6c735556878729abaf07e2022',
         // t: 1554466080,
         page: currentPage,
-        tid: $route.params.id,
+        tid: $route.params.tid,
       };
-      $http.post($urls.getPost, params)
-        .then(data => {
-          this.postTitle = data.tsubject;
-          this.replyList = data.result;
-        })
-        .catch(err => {
-          console.log('ERR_GETPOST: ', err);
-        });
+      return new Promise((resolve, reject) => {
+        $http.post($urls.getPost, params)
+          .then(data => {
+            this.postTitle = data.tsubject;
+            this.replyList = data.result;
+            resolve();
+          })
+          .catch(err => {
+            console.log('ERR_GETPOST: ', err);
+            reject(err);
+          });
+      });
+    },
+    async refresh() {
+      this.refreshing = true;
+      await this.getPost();
+      this.refreshing = false;
+    },
+    async loadMore() {
+      this.loading = true;
+      await this.getPost();
+      this.loading = false;
     },
   },
 };
