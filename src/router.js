@@ -28,7 +28,7 @@ const router = new Router({
               meta: {},
               children: [
                 {
-                  path: '/post/:fid/:tid',
+                  path: '/post/:tid',
                   component: () => import('@/views/post/Post.vue'),
                   meta: {},
                 },
