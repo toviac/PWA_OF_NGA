@@ -2,7 +2,7 @@
 <template>
   <page-frame class="post-detail">
     <page-header slot="header" title="主题详情"></page-header>
-    <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore">
+    <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore" :loadedAll="loadedAll">
       <div class="post-title">{{ postTitle }}</div>
       <reply-item v-for="reply in replyList" :key="reply.pid" :reply="reply"></reply-item>
     </mu-load-more>
@@ -13,15 +13,19 @@
 import PageFrame from '@/components/PageFrame.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import ReplyItem from './ReplyItem.vue';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   data() {
     return {
       loading: false,
       refreshing: false,
+      // 是否全部加载, 为true则不显示loadMore元素
+      loadedAll: false,
       postTitle: '',
       replyList: [],
       currentPage: 1,
+      totalPage: 1,
     };
   },
   components: {
@@ -30,12 +34,15 @@ export default {
     ReplyItem,
   },
   watch: {},
-  computed: {},
+  computed: {
+    ...mapGetters(['currentFid']),
+  },
   created() {
     this.refresh();
   },
   mounted() {},
   methods: {
+    ...mapMutations('current', ['updateTid', 'updateFid']),
     getPost() {
       const {
         $http,
@@ -54,7 +61,14 @@ export default {
         $http.post($urls.getPost, params)
           .then(data => {
             this.postTitle = data.tsubject;
-            this.replyList = data.result;
+            this.totalPage = data.totalPage;
+            this.updateFid(data.fid);
+            if (currentPage === 1) {
+              this.replyList = data.result;
+            } else {
+              this.replyList = this.replyList.concat(data.result);
+            }
+            this.currentPage++;
             resolve();
           })
           .catch(err => {
@@ -65,10 +79,15 @@ export default {
     },
     async refresh() {
       this.refreshing = true;
+      this.currentPage = 1;
       await this.getPost();
       this.refreshing = false;
     },
     async loadMore() {
+      if (this.currentPage > this.totalPage) {
+        this.loadedAll = true;
+        return;
+      }
       this.loading = true;
       await this.getPost();
       this.loading = false;

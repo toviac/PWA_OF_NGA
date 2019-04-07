@@ -2,9 +2,11 @@
 <template>
   <page-frame class="post-list">
     <page-header slot="header" :title="pageTitle" :menuList="menuList" @menuClick="menuClickHandler"></page-header>
-    <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore">
-      <list-item v-for="item in list" :key="item.tid" :item="item" @click.native="goPost(item.tid)"></list-item>
-    </mu-load-more>
+    <!-- <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore"> -->
+      <cube-scroll :data="list" :options="scrollOptions" @pulling-down="refresh" @pulling-up="loadMore">
+        <list-item v-for="item in list" :key="item.tid" :item="item" @click.native="goPost(item.tid)"></list-item>
+      </cube-scroll>
+    <!-- </mu-load-more> -->
     <transition-router-view></transition-router-view>
   </page-frame>
 </template>
@@ -13,6 +15,7 @@
 import PageFrame from '@/components/PageFrame.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import ListItem from './ListItem.vue';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   data() {
@@ -36,17 +39,57 @@ export default {
     PageHeader,
     ListItem,
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters(['currentFid']),
+    scrollOptions() {
+      const { pullDownRefresh, pullUpLoad } = this;
+      return {
+        pullDownRefresh,
+        pullUpLoad,
+        scrollbar: {
+          fade: true,
+          interactive: false, // 1.8.0 新增
+        },
+      };
+    },
+    pullDownRefresh() {
+      return {
+        threshold: 50,
+        stop: 50,
+        stopTime: 500,
+        txt: '刷新成功',
+      };
+    },
+    pullUpLoad() {
+      return {
+        threshold: 0,
+        txt: {
+          more: '加载成功',
+          noMore: '已经到底啦',
+        },
+      };
+    },
+  },
+  watch: {
+    currentFid(newVal) {
+      if (newVal) {
+        this.getList();
+      }
+    },
+  },
   created() {
-    console.log('list created');
     this.getList();
   },
   mounted() {
+    if (!this.currentFid && this.$route.params.fid) {
+      this.updateFid(this.$route.params.fid);
+    }
   },
   methods: {
+    ...mapMutations('current', ['updateFid', 'updateTid']),
     getList() {
       const {
+        currentFid,
         $http,
         $urls,
         $route,
@@ -55,7 +98,7 @@ export default {
       const params = {
         // sign: 'bd2f80c1cbbe85f7ba6f3beac0cbae13',
         // t: new Date().getTime(),
-        fid: $route.params.fid,
+        fid: currentFid || $route.params.fid,
         // app_id: 1010,
         page: currentPage,
         // stid: 0,
@@ -96,7 +139,7 @@ export default {
     },
     goPost(tid) {
       this.$router.push({
-        path: `/post/${this.$route.params.fid}/${tid}`,
+        path: `/post/${tid}`,
       });
     },
     menuClickHandler(menu) {
