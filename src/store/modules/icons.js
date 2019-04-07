@@ -19,6 +19,7 @@ const icons = {
       state.icons.delete(payload);
     },
   },
+  namespaced: true,
 };
 
 export default icons;
