@@ -12,6 +12,10 @@
 </template>
 
 <style lang="scss">
+body {
+  /* Disables pull-to-refresh but allows overscroll glow effects. */
+  overscroll-behavior-y: contain;
+}
 #app {
   box-sizing: border-box;
   height: 100vh;
