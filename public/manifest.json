@@ -1,20 +1,15 @@
 {
-  "name": "pwa_of_nga",
-  "short_name": "pwa_of_nga",
+  "name": "NGA Project",
+  "short_name": "NGA",
   "icons": [
     {
-      "src": "./img/favicon/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./img/favicon/android-chrome-512x512.png",
-      "sizes": "512x512",
+      "src": "./img/favicon/nga_icon_130x130.png",
+      "sizes": "130x130",
       "type": "image/png"
     }
   ],
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#4DBA87"
+  "background_color": "#fff8e7",
+  "theme_color": "#fff8e7"
 }
