@@ -3,8 +3,13 @@
   "short_name": "NGA",
   "icons": [
     {
-      "src": "./img/favicon/nga_icon_130x130.png",
-      "sizes": "130x130",
+      "src": "./img/favicon/nga_icon_144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/favicon/nga_icon_512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],
