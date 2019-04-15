@@ -78,12 +78,10 @@ export default {
     },
   },
   created() {
+    this.updateFid(this.$route.params.fid);
     this.getList();
   },
   mounted() {
-    if (!this.currentFid && this.$route.params.fid) {
-      this.updateFid(this.$route.params.fid);
-    }
   },
   methods: {
     ...mapMutations('current', ['updateFid', 'updateTid']),
