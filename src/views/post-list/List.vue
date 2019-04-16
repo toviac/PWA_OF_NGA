@@ -2,11 +2,11 @@
 <template>
   <page-frame class="post-list">
     <page-header slot="header" :title="pageTitle" :menuList="menuList" @menuClick="menuClickHandler"></page-header>
-    <!-- <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore"> -->
-      <cube-scroll :data="list" :options="scrollOptions" @pulling-down="refresh" @pulling-up="loadMore">
+    <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore">
+      <!-- <cube-scroll :data="list" :options="scrollOptions" @pulling-down="refresh" @pulling-up="loadMore"> -->
         <list-item v-for="item in list" :key="item.tid" :item="item" @click.native="goPost(item.tid)"></list-item>
-      </cube-scroll>
-    <!-- </mu-load-more> -->
+      <!-- </cube-scroll> -->
+    </mu-load-more>
     <transition-router-view></transition-router-view>
   </page-frame>
 </template>
@@ -79,7 +79,7 @@ export default {
   },
   created() {
     this.updateFid(this.$route.params.fid);
-    this.getList();
+    this.refresh();
   },
   mounted() {
   },
@@ -90,13 +90,13 @@ export default {
         currentFid,
         $http,
         $urls,
-        $route,
         currentPage,
       } = this;
       const params = {
         // sign: 'bd2f80c1cbbe85f7ba6f3beac0cbae13',
         // t: new Date().getTime(),
-        fid: currentFid || $route.params.fid,
+        // 进入页面的时候已经把params.fid赋值给currentFid
+        fid: currentFid,
         // app_id: 1010,
         page: currentPage,
         // stid: 0,
@@ -150,5 +150,8 @@ export default {
 <style lang="scss">
 .post-list {
   background-color: $color-primary;
+  .mu-load-more {
+    height: 100%;
+  }
 }
 </style>
