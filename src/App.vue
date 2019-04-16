@@ -14,7 +14,7 @@
 <style lang="scss">
 body {
   /* Disables pull-to-refresh but allows overscroll glow effects. */
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
 }
 #app {
   box-sizing: border-box;
