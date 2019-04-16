@@ -79,7 +79,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   &.mu-appbar {
-    z-index: auto;
+    z-index: 1;
   }
   .mu-icon {
     color: #fbf8eb;
