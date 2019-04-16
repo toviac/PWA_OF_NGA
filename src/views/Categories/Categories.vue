@@ -25,10 +25,10 @@
                 <div class="title">{{ group.name }}</div>
               </cube-sticky-ele>
               <div class="tile-group">
-                <mu-ripple class="tile" v-for="item in group.forums" :key="item.id" @click="handleTileClick(item.id)">
+                <div class="tile" v-for="item in group.forums" :key="item.id" @click="handleTileClick(item.id)">
                   <img class="tile-img" :src="formatImg(item.id)" @error="handleImgError">
                   <div class="tile-name">{{ item.name }}</div>
-                </mu-ripple>
+                </div>
               </div>
             </div>
           </cube-scroll>
