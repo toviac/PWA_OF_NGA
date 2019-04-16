@@ -3,7 +3,7 @@ module.exports = {
   // 基本路径
   publicPath: '/',
   // 输出文件目录
-  outputDir: 'dist',
+  outputDir: 'nga',
   // eslint-loader 是否在保存的时候检查
   lintOnSave: true,
   // use the full build with in-browser compiler?
