@@ -2,6 +2,8 @@ import Vue from 'vue';
 import './cube-ui';
 import './muse-ui';
 import moment from 'moment';
+// import VConsole from './utils/vconsole.min.js';
+import VConsole from 'vconsole';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -9,6 +11,9 @@ import './registerServiceWorker';
 import http from './common/http';
 import urls from './common/urls';
 import TransitionRouterView from './components/TransitionRouterView.vue';
+
+// eslint-disable-next-line
+const vConsole = new VConsole();
 
 
 moment.locale('zh-cn');
