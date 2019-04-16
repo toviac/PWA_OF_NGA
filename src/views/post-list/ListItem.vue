@@ -1,6 +1,6 @@
 <template>
   <div class="list-item">
-    <div class="item-title" :class="titleClass">
+    <div class="item-title" :class="titleClass" :style="titleStyle">
       {{ item.subject }}
       <span class="forum" v-if="item.forumname">[{{ item.forumname }}]</span>
     </div>
@@ -44,11 +44,22 @@ export default {
       const { titlefont_api: titleFont } = this.item;
       if (!titleFont) return [];
       return Object.keys(titleFont).map(key => {
-        if (key === 'color' && titleFont[key] && !['red', 'blue', 'green', 'orange'].includes(titleFont[key])) console.log('UNSET_COLOR: ', this.item, titleFont[key]);
         if (key === 'color' && titleFont[key]) return titleFont[key];
         if (titleFont[key]) return key;
         return '';
       });
+    },
+    titleStyle() {
+      const { titlefont_api: titleFont } = this.item;
+      if (!titleFont) return {};
+      let style = {};
+      Object.keys(titleFont).forEach(key => {
+        if (key === 'color' && titleFont[key] && !['red', 'blue', 'green', 'orange'].includes(titleFont[key])) {
+          console.log('UNSET_COLOR: ', this.item, titleFont[key]);
+          style = { color: titleFont[key] };
+        }
+      });
+      return style;
     },
   },
   watch: {
