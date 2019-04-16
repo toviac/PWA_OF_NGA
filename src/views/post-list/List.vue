@@ -151,7 +151,7 @@ export default {
 .post-list {
   background-color: $color-primary;
   .mu-load-more {
-    height: 100%;
+    min-height: 100%;
   }
 }
 </style>
