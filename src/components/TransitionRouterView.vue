@@ -1,7 +1,7 @@
 <!-- transition-router-view -->
 <template>
   <transition name="page-move">
-    <router-view/>
+    <router-view :key="key"/>
   </transition>
 </template>
 
@@ -13,7 +13,11 @@ export default {
   },
   components: {},
   watch: {},
-  computed: {},
+  computed: {
+    key() {
+      return new Date().getTime();
+    },
+  },
   created() {},
   mounted() {},
   methods: {},

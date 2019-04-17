@@ -2,11 +2,11 @@
   <div id="app">
     <!-- <transition name="page-move"> -->
       <keep-alive key="keep-alive">
-        <router-view v-if="$route.meta.keepAlive"/>
+        <router-view v-if="$route.meta.keepAlive" :key="new Date().getTime()"/>
       </keep-alive>
     <!-- </transition> -->
     <transition name="page-move">
-      <router-view key="router-view" v-if="!$route.meta.keepAlive"/>
+      <router-view v-if="!$route.meta.keepAlive" :key="new Date().getTime()"/>
     </transition>
   </div>
 </template>
