@@ -4,7 +4,7 @@
     <page-header slot="header" :title="pageTitle" :menuList="menuList" @menuClick="menuClickHandler"></page-header>
     <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="loadMore">
       <!-- <cube-scroll :data="list" :options="scrollOptions" @pulling-down="refresh" @pulling-up="loadMore"> -->
-        <list-item v-for="item in list" :key="item.tid" :item="item" @click.native="goPost(item.tid)"></list-item>
+        <list-item v-for="item in list" :key="item.tid" :item="item" @click.native="postClickHandler(item)"></list-item>
       <!-- </cube-scroll> -->
     </mu-load-more>
     <transition-router-view></transition-router-view>
@@ -71,15 +71,18 @@ export default {
     },
   },
   watch: {
+    $route() {
+      this.refresh();
+    },
     currentFid(newVal) {
       if (newVal) {
-        this.getList();
+        this.refresh();
       }
     },
   },
   created() {
     this.updateFid(this.$route.params.fid);
-    this.refresh();
+    // this.refresh();
   },
   mounted() {
   },
@@ -135,7 +138,16 @@ export default {
       await this.getList();
       this.loading = false;
     },
-    goPost(tid) {
+    postClickHandler({ tid, is_forum: isForum }) {
+      console.log('itemClick: ', tid, isForum);
+      // 判断是否是子版面
+      if (isForum) {
+        // 子版面使用原接口会被重定向
+        this.$router.push({
+          path: `/blocks/${tid}`,
+        });
+        return;
+      }
       this.$router.push({
         path: `/post/${tid}`,
       });
