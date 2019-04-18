@@ -76,7 +76,7 @@ module.exports = {
     https: false,
     hotOnly: false,
     // 设置代理, 监听后台端口
-    proxy: 'http://ngabbs.com',
+    proxy: 'https://ngabbs.com',
     before: app => {}
   },
   // 第三方插件配置
