@@ -55,48 +55,6 @@ export default {
           return scrollOffset;
       }
     },
-    pullDownStyle() {
-      const { offset, isRefreshing } = this;
-      let height = 0;
-      switch (true) {
-        case isRefreshing:
-          height = 50;
-          break;
-        case offset < 0:
-          height = 0;
-          break;
-        case offset > 100:
-          height = 100;
-          break;
-        default:
-          height = offset;
-          break;
-      }
-      return {
-        height: `${height}px`,
-      };
-    },
-    pullUpStyle() {
-      const { offset, isLoading } = this;
-      let height = 0;
-      switch (true) {
-        case isLoading:
-          height = 50;
-          break;
-        case offset > 0:
-          height = 0;
-          break;
-        case offset < -100:
-          height = 100;
-          break;
-        default:
-          height = -offset;
-          break;
-      }
-      return {
-        height: `${height}px`,
-      };
-    },
   },
   watch: {
     refreshing(newVal) {
@@ -107,15 +65,18 @@ export default {
   },
   methods: {
     touchHandler(e) {
+      const { offset } = this;
       const el = document.querySelector('.scroll-wrapper');
-      console.log('==> ', el.scrollHeight, e.changedTouches[0].pageY);
       // scrollTop === 0时滚动到顶部
       const isTop = !el.scrollTop;
       const isBottom = el.scrollHeight - el.scrollTop === el.clientHeight;
-      const lastTouchPos = this.touchArr[this.touchArr.length];
-      console.log('===> ', isTop, isBottom, lastTouchPos);
+      const firstTouch = this.touchArr[0];
       // (在顶端&&下拉) || (在底端&&上拉)
-      if ((isTop && (lastTouchPos || 0) < e.changedTouches[0].clientY) || (isBottom && (lastTouchPos || el.scrollHeight) > e.changedTouches[0].pageY)) {
+      if ((isTop && (firstTouch || 0) < e.changedTouches[0].pageY) || (isBottom && (firstTouch || el.scrollHeight) > e.changedTouches[0].pageY)) {
+        console.log('==> ', isTop, isBottom, firstTouch, e.changedTouches[0].pageY);
+        if (offset) {
+          e.preventDefault();
+        }
         // 触摸点相对于浏览器的viewport上边缘的y坐标, 不会包括上边的滚动距离
         this.touchArr.push(e.changedTouches[0].clientY);
       }
@@ -150,7 +111,7 @@ export default {
 
 <style lang="scss">
 .scroller {
-  transition: all 0.3s ease-out;
+  transition: all 0 ease-out;
   .pull-down-wrapper,
   .pull-up-wrapper {
     background-color: #ccc;
