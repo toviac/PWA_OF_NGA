@@ -8,6 +8,13 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {
+      path: '/test',
+      component: () => import('@/test/ScrollerTest.vue'),
+      meta: {
+        title: '测试',
+      },
+    },
+    {
       path: '/',
       component: Home,
       meta: {
