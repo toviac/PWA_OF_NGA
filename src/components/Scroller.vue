@@ -107,8 +107,18 @@ export default {
   },
   methods: {
     touchHandler(e) {
-      // 触摸点相对于浏览器的viewport上边缘的y坐标, 不会包括上边的滚动距离
-      this.touchArr.push(e.changedTouches[0].clientY);
+      const el = document.querySelector('.scroll-wrapper');
+      console.log('==> ', el.scrollHeight, e.changedTouches[0].pageY);
+      // scrollTop === 0时滚动到顶部
+      const isTop = !el.scrollTop;
+      const isBottom = el.scrollHeight - el.scrollTop === el.clientHeight;
+      const lastTouchPos = this.touchArr[this.touchArr.length];
+      console.log('===> ', isTop, isBottom, lastTouchPos);
+      // (在顶端&&下拉) || (在底端&&上拉)
+      if ((isTop && (lastTouchPos || 0) < e.changedTouches[0].clientY) || (isBottom && (lastTouchPos || el.scrollHeight) > e.changedTouches[0].pageY)) {
+        // 触摸点相对于浏览器的viewport上边缘的y坐标, 不会包括上边的滚动距离
+        this.touchArr.push(e.changedTouches[0].clientY);
+      }
     },
     touchEndHandler(e) {
       const { offset } = this;
