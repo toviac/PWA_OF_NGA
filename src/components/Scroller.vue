@@ -35,7 +35,6 @@ export default {
       touchArr: [],
       isRefreshing: false,
       isLoading: false,
-      offset: 0,
     };
   },
   components: {
@@ -47,7 +46,7 @@ export default {
         height,
         transform: `translate3D(0px,${offset}px,0px)`,
       };
-      if (!offset || offset === 50) {
+      if (!offset || Math.abs(offset) === 50) {
         style = Object.assign({}, style, {
           transition: 'all 0.2s ease 0s',
         });
@@ -70,6 +69,36 @@ export default {
       }
       return 'PULL UP TO LOAD MORE';
     },
+    offset() {
+      const { touchArr, isRefreshing, isLoading } = this;
+      const el = document.querySelector('.scroll-wrapper') || {};
+      // scrollTop === 0时滚动到顶部
+      const isTop = !el.scrollTop;
+      const isBottom = el.scrollHeight - el.scrollTop === el.clientHeight;
+
+      // 触摸偏移
+      let touchOffset = 0;
+      if (touchArr.length) {
+        touchOffset = (touchArr[touchArr.length - 1] - touchArr[0]) / 3;
+      }
+      switch (true) {
+        case isRefreshing:
+          return 50;
+        case isLoading:
+          return -50;
+        // 限制最大滑动长度
+        // case Math.abs(touchOffset) > 100:
+        //   if (touchOffset > 0) {
+        //     return 100;
+        //   }
+        //   return -100;
+        default:
+          if ((isTop && touchOffset > 0) || (isBottom && touchOffset < 0)) {
+            return touchOffset;
+          }
+          return 0;
+      }
+    },
   },
   watch: {
     refreshing(newVal) {
@@ -78,43 +107,18 @@ export default {
     loading(newVal) {
       this.isLoading = newVal;
     },
-    isRefreshing(newVal) {
-      if (!newVal) {
-        this.offset = 0;
-      }
-    },
-    isLoading(newVal) {
-      if (!newVal) {
-        this.offset = 0;
-      }
-    },
   },
   mounted() {
   },
   methods: {
     touchHandler(e) {
-      const {
-        offset,
-        touchArr,
-        // isLoading,
-        // isRefreshing,
-      } = this;
-      const el = document.querySelector('.scroll-wrapper');
-      // scrollTop === 0时滚动到顶部
-      const isTop = !el.scrollTop;
-      const isBottom = el.scrollHeight - el.scrollTop === el.clientHeight;
-      // const firstTouch = touchArr[0];
-      // console.log('==> ', isTop, isBottom, e.changedTouches[0].pageY);
-      // (在顶端&&下拉) || (在底端&&上拉)
-      if ((isTop && offset >= 0) || (isBottom && offset <= 0)) {
-        if (offset) {
-          e.preventDefault();
-        }
-        if (touchArr.length < 2 || offset) {
-          touchArr.push(e.changedTouches[0].pageY);
-        }
+      const { offset, touchArr } = this;
+      this.isRefreshing = false;
+      this.isLoading = false;
+      if (offset && e.cancelable) {
+        e.preventDefault();
       }
-      this.setOffset();
+      touchArr.push(e.changedTouches[0].pageY);
     },
     touchEndHandler(e) {
       const { offset } = this;
@@ -126,53 +130,16 @@ export default {
         this.pullUp();
       }
       this.touchArr = [];
-      this.setOffset();
     },
     // 下拉
     pullDown() {
       console.log('pullDown');
       this.$emit('pull-down');
-      this.isRefreshing = true;
-      setTimeout(() => {
-        this.isRefreshing = false;
-      }, 5000);
     },
     // 上拉
     pullUp() {
       console.log('pullUp');
-    },
-    setOffset() {
-      const { touchArr, isRefreshing, isLoading } = this;
-      // 触摸偏移
-      let touchOffset = 0;
-      // 上次偏移
-      let lastOffset = 0;
-      if (touchArr.length) {
-        touchOffset = (touchArr[touchArr.length - 1] - touchArr[0]) / 2;
-        lastOffset = ((touchArr[touchArr.length - 2] || touchArr[0]) - touchArr[0]) / 2;
-      }
-      switch (true) {
-        case isRefreshing:
-          this.offset = 50;
-          break;
-        case isLoading:
-          this.offset = -50;
-          break;
-        // 限制最大滑动长度
-        // case Math.abs(touchOffset) > 100:
-        //   if (touchOffset > 0) {
-        //     return 100;
-        //   }
-        //   return -100;
-        default:
-          // 防止随意拉动时产生不正确的offset
-          // e.g. 在最上方向下拉, 再迅速向上拉时, 会产生一个负的offset, 导致页面上移一部分
-          if (touchOffset * lastOffset < 0) {
-            this.offset = 0;
-          }
-          this.offset = touchOffset;
-          break;
-      }
+      this.$emit('pull-up');
     },
   },
 };
