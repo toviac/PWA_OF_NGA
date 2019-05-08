@@ -1,14 +1,16 @@
 <!-- 上拉刷新/下拉加载 -->
 <template>
-  <div class="scroller" :style="scrollerStyle">
-    <div class="pull-down-wrapper">
-      <span>{{ refreshTxt }}</span>
-    </div>
-    <div class="scroll-wrapper" @touchmove="touchHandler" @touchend="touchEndHandler">
-      <slot></slot>
-    </div>
-    <div class="pull-up-wrapper">
-      <span>{{ loadTxt }}</span>
+  <div class="scroller" :style="{ height: height }">
+    <div class="scroll-container" :style="scrollerStyle">
+      <div v-if="$listeners['pull-down']" class="pull-down-wrapper">
+        <span>{{ refreshTxt }}</span>
+      </div>
+      <div class="scroll-wrapper" @touchmove="touchHandler" @touchend="touchEndHandler">
+        <slot></slot>
+      </div>
+      <div v-if="$listeners['pull-up']" class="pull-up-wrapper">
+        <span>{{ loadTxt }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -35,15 +37,15 @@ export default {
       touchArr: [],
       isRefreshing: false,
       isLoading: false,
+      offset: 0,
     };
   },
   components: {
   },
   computed: {
     scrollerStyle() {
-      const { height, offset } = this;
+      const { offset } = this;
       let style = {
-        height,
         transform: `translate3D(0px,${offset}px,0px)`,
       };
       if (!offset || Math.abs(offset) === 50) {
@@ -69,36 +71,6 @@ export default {
       }
       return 'PULL UP TO LOAD MORE';
     },
-    offset() {
-      const { touchArr, isRefreshing, isLoading } = this;
-      const el = document.querySelector('.scroll-wrapper') || {};
-      // scrollTop === 0时滚动到顶部
-      const isTop = !el.scrollTop;
-      const isBottom = el.scrollHeight - el.scrollTop === el.clientHeight;
-
-      // 触摸偏移
-      let touchOffset = 0;
-      if (touchArr.length) {
-        touchOffset = (touchArr[touchArr.length - 1] - touchArr[0]) / 3;
-      }
-      switch (true) {
-        case isRefreshing:
-          return 50;
-        case isLoading:
-          return -50;
-        // 限制最大滑动长度
-        // case Math.abs(touchOffset) > 100:
-        //   if (touchOffset > 0) {
-        //     return 100;
-        //   }
-        //   return -100;
-        default:
-          if ((isTop && touchOffset > 0) || (isBottom && touchOffset < 0)) {
-            return touchOffset;
-          }
-          return 0;
-      }
-    },
   },
   watch: {
     refreshing(newVal) {
@@ -106,6 +78,12 @@ export default {
     },
     loading(newVal) {
       this.isLoading = newVal;
+    },
+    isRefreshing() {
+      this.setOffset();
+    },
+    isLoading() {
+      this.setOffset();
     },
   },
   mounted() {
@@ -119,6 +97,7 @@ export default {
         e.preventDefault();
       }
       touchArr.push(e.changedTouches[0].pageY);
+      this.setOffset();
     },
     touchEndHandler(e) {
       const { offset } = this;
@@ -141,12 +120,55 @@ export default {
       console.log('pullUp');
       this.$emit('pull-up');
     },
+    setOffset() {
+      const { touchArr, isRefreshing, isLoading } = this;
+      const el = document.querySelector('.scroll-wrapper') || {};
+      // scrollTop === 0时滚动到顶部
+      const isTop = !el.scrollTop;
+      const isBottom = el.scrollHeight - el.scrollTop === el.clientHeight;
+
+      // 触摸偏移
+      let touchOffset = 0;
+      if (touchArr.length) {
+        touchOffset = (touchArr[touchArr.length - 1] - touchArr[0]) / 3;
+      }
+      switch (true) {
+        case isRefreshing:
+          this.offset = 50;
+          return;
+        case isLoading:
+          this.offset = -50;
+          return;
+        // 限制最大滑动长度
+        // case Math.abs(touchOffset) > 100:
+        //   if (touchOffset > 0) {
+        //     return 100;
+        //   }
+        //   return -100;
+        default:
+          if ((isTop && touchOffset > 0) || (isBottom && touchOffset < 0)) {
+            this.offset = touchOffset;
+            return;
+          }
+          this.offset = 0;
+      }
+    },
   },
 };
 </script>
 
 <style lang="scss">
 .scroller {
+  position: relative;
+  overflow: hidden;
+  .scroll-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+  }
   .pull-down-wrapper,
   .pull-up-wrapper {
     background-color: #ccc;
